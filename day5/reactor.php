@@ -3,28 +3,20 @@ ini_set('memory_limit','512M');
 
 $file = fopen("./polymer.txt", "r");
 $polymer = fgets($file);
-$polyArr = str_split($polymer);
-$startingArrayLength = count($polyArr);
-$endingArrayLength = recReactor($polyArr, 0, 0);
 
-echo "Finished operation. Ending array length was " . $endingArrayLength . ". Started with: " . $startingArrayLength;
 
-function recReactor($polymerArray, $iteration, $reactionCount) {
-    echo "Iteration: " . $iteration . "\n";
-    if ($iteration == count($polymerArray)) {
-        return $iteration;
+$occurances = 1;
+while ($occurances > 0) {
+    $occurances = 0;
+    foreach (range("a", "z") as $alphabet) {
+        if (strpos($polymer, $alphabet . ucfirst($alphabet)) || strpos($polymer, ucfirst($alphabet) . $alphabet)) {
+            $occurances++;
+            $polymer = str_replace($alphabet . ucfirst($alphabet), "", $polymer);
+            $polymer = str_replace(ucfirst($alphabet) . $alphabet, "", $polymer);
+        }
     }
-
-    $firstUnit = $polymerArray[$iteration];
-    $nextUnit = $polymerArray[$iteration + 1];
-    if ((ctype_upper($firstUnit) && $firstUnit == ucfirst($nextUnit)) || (!ctype_upper($firstUnit) && $firstUnit == lcfirst($nextUnit))) {
-        array_splice($polymerArray, $iteration, 2);
-        echo "REACTION! " . $firstUnit . " and " . $nextUnit . "\n";
-        $iteration - 2;
-        $reactionCount++;
-    }
-    return recReactor($polymerArray, $iteration + 1, $reactionCount);
 }
 
+echo strlen(trim($polymer));
 
 ?>
